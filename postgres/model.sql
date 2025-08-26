@@ -8,7 +8,7 @@ CREATE TABLE orders (
     delivery_service TEXT,
     shardkey TEXT,
     sm_id INTEGER,
-    date_created TIMESTAMP,
+    date_created TEXT,
     oof_shard TEXT
 );
 
@@ -87,3 +87,8 @@ INSERT INTO items (
     'ab4219087a764ae0btest', 'Mascaras', 30, '0', 317, 2389212,
     'Vivienne Sabo', 202
 );
+
+-- DROP TABLE IF EXISTS orders;
+-- DROP TABLE IF EXISTS delivery;
+-- DROP TABLE IF EXISTS payment;
+-- DROP TABLE IF EXISTS items;

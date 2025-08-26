@@ -1,4 +1,4 @@
-package postgres
+package model
 
 type Order struct {
 	OrderUID        string `json:"order_uid"`
@@ -19,7 +19,7 @@ type Order struct {
 }
 
 type Delivery struct {
-	OrderUID string `json:"-"`
+	OrderUID string `json:"order_uid"`
 	Name     string `json:"name"`
 	Phone    string `json:"phone"`
 	Zip      string `json:"zip"`
@@ -30,8 +30,8 @@ type Delivery struct {
 }
 
 type Payment struct {
+	OrderUID     string `json:"order_uid"`
 	Transaction  string `json:"transaction"`
-	OrderUID     string `json:"-"`
 	RequestID    string `json:"request_id"`
 	Currency     string `json:"currency"`
 	Provider     string `json:"provider"`
@@ -44,8 +44,7 @@ type Payment struct {
 }
 
 type Item struct {
-	ID          int    `json:"-"`
-	OrderUID    string `json:"-"`
+	OrderUID    string `json:"order_uid"`
 	ChrtID      int64  `json:"chrt_id"`
 	TrackNumber string `json:"track_number"`
 	Price       int    `json:"price"`
@@ -57,4 +56,9 @@ type Item struct {
 	NmID        int    `json:"nm_id"`
 	Brand       string `json:"brand"`
 	Status      int    `json:"status"`
+}
+
+type KafkaMsg struct {
+	Order  Order  `json:"order"`
+	Method string `json:"method"`
 }
