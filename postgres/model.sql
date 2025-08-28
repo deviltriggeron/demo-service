@@ -91,3 +91,4 @@ INSERT INTO items (
     'Vivienne Sabo', 202
 )
 ON CONFLICT (id) DO NOTHING;
+

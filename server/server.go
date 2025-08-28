@@ -29,6 +29,8 @@ func (s *Server) Run() {
 
 	r.HandleFunc("/insert", s.insert).Methods("POST")
 
+	r.HandleFunc("/update", s.update).Methods("PUT")
+
 	log.Println("HTTP server started on :8081")
 	http.ListenAndServe(":8081", r)
 }

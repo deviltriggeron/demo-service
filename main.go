@@ -32,7 +32,7 @@ func main() {
 }
 
 // model.Order{
-// 	OrderUID: "b563feb7b2b84b6test", TrackNumber: "WBILMTESTTRACK", Entry: "WBIL", Locale: "en", InternalSig: "", CustomerID: "test",
+// 	OrderUID: "b563feb7b2b84b6test", TrackNumber: "WBILMTESTTRACK", Entry: "WBIL", Locale: "en", InternalSig: "sig678", CustomerID: "test",
 // 	DeliveryService: "meest", Shardkey: "9", SmID: 99, DateCreated: "2021-11-26T06:22:19Z", OofShard: "1",
 
 // 	Delivery: model.Delivery{

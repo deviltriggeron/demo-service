@@ -159,35 +159,34 @@ func (s *Server) index(w http.ResponseWriter, r *http.Request) {
 			<pre id="createResult"></pre>
 			<div style="flex: 1; padding: 10px; border-left: 1px solid #ccc;">
 			<h2>Change order</h2>
-			<form id="orderForm" onsubmit="update(); return false;">
-				<div class="form-container">
-					<div class="form-block">
-						<h3>Orders</h3>
-						<label>Old order UID:</label><br/>
-						<input type="text" id="oldOrderUID" required /><br/>
-						<label>Track number:</label><br/>
-						<input type="text" id="trackNumber" required /><br/>
-						<label>Entry:</label><br/>
-						<input type="text" id="entry" required /><br/>
-						<label>Locale:</label><br/>
-						<input type="text" id="locale" required /><br/>
-						<label>Internal signature:</label><br/>
-						<input type="text" id="internal_signature" required /><br/>
-						<label>Customer ID:</label><br/>
-						<input type="text" id="customer_id" required /><br/>
-						<label>Delivery service:</label><br/>
-						<input type="text" id="delivery_service" required /><br/>
-						<label>Shardkey:</label><br/>
-						<input type="text" id="shardkey" required /><br/>
-						<label>Sm ID:</label><br/>
-						<input type="number" id="sm_id" required /><br/>
-						<label>Date created:</label><br/>
-						<input type="text" id="date_created" required /><br/>
-						<label>Oof shard:</label><br/>
-						<input type="text" id="oof_shard" required /><br/>
-					</div>
-
-					<div class="form-block">
+		<form id="updateForm" onsubmit="update(); return false;">
+			<div class="form-container">
+				<div class="form-block">
+					<h3>Orders</h3>
+					<label>Order UID:</label><br/>
+					<input type="text" id="oldOrderUID" required /><br/>
+					<label>Track number:</label><br/>
+					<input type="text" id="upd_trackNumber" required /><br/>
+					<label>Entry:</label><br/>
+					<input type="text" id="upd_entry" required /><br/>
+					<label>Locale:</label><br/>
+					<input type="text" id="upd_locale" required /><br/>
+					<label>Internal signature:</label><br/>
+					<input type="text" id="upd_internal_signature" required /><br/>
+					<label>Customer ID:</label><br/>
+					<input type="text" id="upd_customer_id" required /><br/>
+					<label>Delivery service:</label><br/>
+					<input type="text" id="upd_delivery_service" required /><br/>
+					<label>Shardkey:</label><br/>
+					<input type="text" id="upd_shardkey" required /><br/>
+					<label>Sm ID:</label><br/>
+					<input type="number" id="upd_sm_id" required /><br/>
+					<label>Date created:</label><br/>
+					<input type="text" id="upd_date_created" required /><br/>
+					<label>Oof shard:</label><br/>
+					<input type="text" id="upd_oof_shard" required /><br/>
+				</div>
+				<div class="form-block">
 						<h3>Delivery</h3>
 						<label>Name:</label><br/>
 						<input type="text" id="delivery_name" /><br/>
@@ -255,171 +254,166 @@ func (s *Server) index(w http.ResponseWriter, r *http.Request) {
 						<input type="number" id="item_status" /><br/>
 					</div>
 				</div>
+			</div>
+			<button type="submit">Change Order</button>
+		</form>
+		<pre id="updateResult"></pre>
 
-				<button type="submit">Change Order</button>
-			</form>
-			<pre id="createResult"></pre>
-
-			<script>
-				function getOrder() {
-					let id = document.getElementById("orderId").value;
-					fetch("/order/" + id)
-						.then(r => {
-							if (!r.ok) return r.text().then(t => { throw new Error(t) });
-							return r.json();
-						})
-						.then(data => document.getElementById("result").textContent = JSON.stringify(data, null, 2))
-						.catch(err => alert("Error: " + err));
-				}
-
-				function getAllOrders() {
-					fetch("/orders")
-						.then(r => {
-							if (!r.ok) return r.text().then(t => { throw new Error(t) });
-							return r.json();
-						})
-						.then(data => document.getElementById("result").textContent = JSON.stringify(data, null, 2))
-						.catch(err => alert("Error: " + err));
-				}
-
-				function insert() {
-					let order = {
-						order_uid: document.getElementById("orderUID").value,
-						track_number: document.getElementById("trackNumber").value,
-						entry: document.getElementById("entry").value,
-						locale: document.getElementById("locale").value,
-						internal_signature: document.getElementById("internal_signature").value,
-						customer_id: document.getElementById("customer_id").value,
-						delivery_service: document.getElementById("delivery_service").value,
-						shardkey: document.getElementById("shardkey").value,
-						sm_id: parseInt(document.getElementById("sm_id").value),
-						date_created: document.getElementById("date_created").value,
-						oof_shard: document.getElementById("oof_shard").value,
-
-						delivery: {
-							order_uid: document.getElementById("orderUID").value,
-							name: document.getElementById("delivery_name").value,
-							phone: document.getElementById("delivery_phone").value,
-							zip: document.getElementById("delivery_zip").value,
-							city: document.getElementById("delivery_city").value,
-							address: document.getElementById("delivery_address").value,
-							region: document.getElementById("delivery_region").value,
-							email: document.getElementById("delivery_email").value,
-						},
-
-						payment: {
-							order_uid: document.getElementById("orderUID").value,
-							transaction: document.getElementById("payment_transaction").value,
-							request_id: document.getElementById("payment_request_id").value,
-							currency: document.getElementById("payment_currency").value,
-							provider: document.getElementById("payment_provider").value,
-							amount: parseInt(document.getElementById("payment_amount").value),
-							payment_dt: parseInt(document.getElementById("payment_dt").value),
-							bank: document.getElementById("payment_bank").value,
-							delivery_cost: parseInt(document.getElementById("payment_delivery_cost").value),
-							goods_total: parseInt(document.getElementById("payment_goods_total").value),
-							custom_fee: parseInt(document.getElementById("payment_custom_fee").value),
-						},
-
-						items: [
-							{
-								order_uid: document.getElementById("orderUID").value,
-								chrt_id: parseInt(document.getElementById("item_chrt_id").value),
-								track_number: document.getElementById("item_track_number").value,
-								price: parseInt(document.getElementById("item_price").value),
-								rid: document.getElementById("item_rid").value,
-								name: document.getElementById("item_name").value,
-								sale: parseInt(document.getElementById("item_sale").value),
-								size: document.getElementById("item_size").value,
-								total_price: parseInt(document.getElementById("item_total_price").value),
-								nm_id: parseInt(document.getElementById("item_nm_id").value),
-								brand: document.getElementById("item_brand").value,
-								status: parseInt(document.getElementById("item_status").value),
-							}
-						]
-					};
-
-					fetch("/insert", {
-						method: "POST",
-						headers: { "Content-Type": "application/json" },
-						body: JSON.stringify(order)
-					})
+		<script>
+			function getOrder() {
+				let id = document.getElementById("orderId").value;
+				fetch("/order/" + id)
 					.then(r => {
 						if (!r.ok) return r.text().then(t => { throw new Error(t) });
 						return r.json();
 					})
-					.then(data => document.getElementById("createResult").textContent = JSON.stringify(data, null, 2))
+					.then(data => document.getElementById("result").textContent = JSON.stringify(data, null, 2))
 					.catch(err => alert("Error: " + err));
-				}
-				function update() {
-					let newOrder = {
-						order_uid: document.getElementById("oldOrderUID").value,
-						track_number: document.getElementById("trackNumber").value,
-						entry: document.getElementById("entry").value,
-						locale: document.getElementById("locale").value,
-						internal_signature: document.getElementById("internal_signature").value,
-						customer_id: document.getElementById("customer_id").value,
-						delivery_service: document.getElementById("delivery_service").value,
-						shardkey: document.getElementById("shardkey").value,
-						sm_id: parseInt(document.getElementById("sm_id").value),
-						date_created: document.getElementById("date_created").value,
-						oof_shard: document.getElementById("oof_shard").value,
+			}
 
-						delivery: {
+			function getAllOrders() {
+				fetch("/orders")
+					.then(r => {
+						if (!r.ok) return r.text().then(t => { throw new Error(t) });
+						return r.json();
+					})
+					.then(data => document.getElementById("result").textContent = JSON.stringify(data, null, 2))
+					.catch(err => alert("Error: " + err));
+			}
+
+			function insert() {
+				let order = {
+					order_uid: document.getElementById("orderUID").value,
+					track_number: document.getElementById("trackNumber").value,
+					entry: document.getElementById("entry").value,
+					locale: document.getElementById("locale").value,
+					internal_signature: document.getElementById("internal_signature").value,
+					customer_id: document.getElementById("customer_id").value,
+					delivery_service: document.getElementById("delivery_service").value,
+					shardkey: document.getElementById("shardkey").value,
+					sm_id: parseInt(document.getElementById("sm_id").value),
+					date_created: document.getElementById("date_created").value,
+					oof_shard: document.getElementById("oof_shard").value,
+
+					delivery: {
+						order_uid: document.getElementById("orderUID").value,
+						name: document.getElementById("delivery_name").value,
+						phone: document.getElementById("delivery_phone").value,
+						zip: document.getElementById("delivery_zip").value,
+						city: document.getElementById("delivery_city").value,
+						address: document.getElementById("delivery_address").value,
+						region: document.getElementById("delivery_region").value,
+						email: document.getElementById("delivery_email").value, 
+					},
+
+					payment: { 
+						order_uid: document.getElementById("orderUID").value,
+						transaction: document.getElementById("payment_transaction").value,
+						request_id: document.getElementById("payment_request_id").value,
+						currency: document.getElementById("payment_currency").value,
+						provider: document.getElementById("payment_provider").value,
+						amount: parseInt(document.getElementById("payment_amount").value),
+						payment_dt: parseInt(document.getElementById("payment_dt").value),
+						bank: document.getElementById("payment_bank").value,
+						delivery_cost: parseInt(document.getElementById("payment_delivery_cost").value),
+						goods_total: parseInt(document.getElementById("payment_goods_total").value),
+						custom_fee: parseInt(document.getElementById("payment_custom_fee").value), 
+					},
+					items: [ 
+						{ 
 							order_uid: document.getElementById("orderUID").value,
-							name: document.getElementById("delivery_name").value,
-							phone: document.getElementById("delivery_phone").value,
-							zip: document.getElementById("delivery_zip").value,
-							city: document.getElementById("delivery_city").value,
-							address: document.getElementById("delivery_address").value,
-							region: document.getElementById("delivery_region").value,
-							email: document.getElementById("delivery_email").value,
-						},
+							chrt_id: parseInt(document.getElementById("item_chrt_id").value),
+							track_number: document.getElementById("item_track_number").value,
+							price: parseInt(document.getElementById("item_price").value),
+							rid: document.getElementById("item_rid").value,
+							name: document.getElementById("item_name").value,
+							sale: parseInt(document.getElementById("item_sale").value),
+							size: document.getElementById("item_size").value,
+							total_price: parseInt(document.getElementById("item_total_price").value),
+							nm_id: parseInt(document.getElementById("item_nm_id").value),
+							brand: document.getElementById("item_brand").value,
+							status: parseInt(document.getElementById("item_status").value), 
+						} 
+					] 
+					
+				};
+				fetch("/insert", {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify(order)
+				})
+				.then(r => r.json())
+				.then(data => document.getElementById("createResult").textContent = JSON.stringify(data, null, 2))
+				.catch(err => alert("Error: " + err));
+			}
 
-						payment: {
+			function update() {
+				let newOrder = {
+					order_uid: document.getElementById("oldOrderUID").value,
+					track_number: document.getElementById("upd_trackNumber").value,
+					entry: document.getElementById("upd_entry").value,
+					locale: document.getElementById("upd_locale").value,
+					internal_signature: document.getElementById("upd_internal_signature").value,
+					customer_id: document.getElementById("upd_customer_id").value,
+					delivery_service: document.getElementById("upd_delivery_service").value,
+					shardkey: document.getElementById("upd_shardkey").value,
+					sm_id: parseInt(document.getElementById("upd_sm_id").value),
+					date_created: document.getElementById("upd_date_created").value,
+					oof_shard: document.getElementById("upd_oof_shard").value,
+
+					delivery: {
+						order_uid: document.getElementById("orderUID").value,
+						name: document.getElementById("delivery_name").value,
+						phone: document.getElementById("delivery_phone").value,
+						zip: document.getElementById("delivery_zip").value,
+						city: document.getElementById("delivery_city").value,
+						address: document.getElementById("delivery_address").value,
+						region: document.getElementById("delivery_region").value,
+						email: document.getElementById("delivery_email").value, 
+					},
+
+					payment: { 
+						order_uid: document.getElementById("orderUID").value,
+						transaction: document.getElementById("payment_transaction").value,
+						request_id: document.getElementById("payment_request_id").value,
+						currency: document.getElementById("payment_currency").value,
+						provider: document.getElementById("payment_provider").value,
+						amount: parseInt(document.getElementById("payment_amount").value),
+						payment_dt: parseInt(document.getElementById("payment_dt").value),
+						bank: document.getElementById("payment_bank").value,
+						delivery_cost: parseInt(document.getElementById("payment_delivery_cost").value),
+						goods_total: parseInt(document.getElementById("payment_goods_total").value),
+						custom_fee: parseInt(document.getElementById("payment_custom_fee").value), 
+					},
+					items: [ 
+						{ 
 							order_uid: document.getElementById("orderUID").value,
-							transaction: document.getElementById("payment_transaction").value,
-							request_id: document.getElementById("payment_request_id").value,
-							currency: document.getElementById("payment_currency").value,
-							provider: document.getElementById("payment_provider").value,
-							amount: parseInt(document.getElementById("payment_amount").value),
-							payment_dt: parseInt(document.getElementById("payment_dt").value),
-							bank: document.getElementById("payment_bank").value,
-							delivery_cost: parseInt(document.getElementById("payment_delivery_cost").value),
-							goods_total: parseInt(document.getElementById("payment_goods_total").value),
-							custom_fee: parseInt(document.getElementById("payment_custom_fee").value),
-						},
-
-						items: [
-							{
-								order_uid: document.getElementById("orderUID").value,
-								chrt_id: parseInt(document.getElementById("item_chrt_id").value),
-								track_number: document.getElementById("item_track_number").value,
-								price: parseInt(document.getElementById("item_price").value),
-								rid: document.getElementById("item_rid").value,
-								name: document.getElementById("item_name").value,
-								sale: parseInt(document.getElementById("item_sale").value),
-								size: document.getElementById("item_size").value,
-								total_price: parseInt(document.getElementById("item_total_price").value),
-								nm_id: parseInt(document.getElementById("item_nm_id").value),
-								brand: document.getElementById("item_brand").value,
-								status: parseInt(document.getElementById("item_status").value),
-							}
-						]
-					};
-
+							chrt_id: parseInt(document.getElementById("item_chrt_id").value),
+							track_number: document.getElementById("item_track_number").value,
+							price: parseInt(document.getElementById("item_price").value),
+							rid: document.getElementById("item_rid").value,
+							name: document.getElementById("item_name").value,
+							sale: parseInt(document.getElementById("item_sale").value),
+							size: document.getElementById("item_size").value,
+							total_price: parseInt(document.getElementById("item_total_price").value),
+							nm_id: parseInt(document.getElementById("item_nm_id").value),
+							brand: document.getElementById("item_brand").value,
+							status: parseInt(document.getElementById("item_status").value), 
+						} 
+					] 
+				};
 				fetch("/update", {
 					method: "PUT",
 					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify(order),
-					})
-					.then(r => r.json())
-					.then(data => document.getElementById("updateResult").textContent = JSON.stringify(data, null, 2))
-					.catch(err => alert("Error: " + err));
-				}
-			</script>
-		</body>
-		</html>
+					body: JSON.stringify(newOrder),
+				})
+				.then(r => r.json())
+				.then(data => document.getElementById("updateResult").textContent = JSON.stringify(data, null, 2))
+				.catch(err => alert("Error: " + err));
+			}
+		</script>
+	</body>
+	</html>
 	`
 	w.Header().Set("Content-Type", "text/html")
 	w.Write([]byte(html))

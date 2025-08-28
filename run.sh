@@ -1,4 +1,4 @@
 #!/bin/bash
 
 docker build -t orders-service .
-docker compose up --build    
+docker compose up --build
