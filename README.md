@@ -1,3 +1,5 @@
 # demo-service
 
-demo-service using kafka and postgresql
+Демо сервис
+
+В данном сервисе используется docker-контейнер kafka postgresql и кэш на основе map

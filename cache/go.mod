@@ -1,6 +1,6 @@
 module cache
 
-go 1.24.2
+go 1.22
 
 require (
 	model/model v0.0.0

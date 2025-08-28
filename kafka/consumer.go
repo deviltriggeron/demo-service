@@ -13,7 +13,7 @@ import (
 
 func ConsumeOrder(topic string, svc *service.OrderService) {
 	r := kafka.NewReader(kafka.ReaderConfig{
-		Brokers:     []string{"localhost:9092"},
+		Brokers:     []string{"kafka:9092"},
 		Topic:       topic,
 		Partition:   0,
 		MinBytes:    10e3,

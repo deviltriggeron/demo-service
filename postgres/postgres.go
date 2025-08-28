@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	model "model/model"
+	"os"
 
 	_ "github.com/lib/pq"
 )
@@ -13,14 +14,28 @@ var db *sql.DB
 func InitDB() error {
 	var err error
 
-	dsn := "host=localhost port=5432 user=postgres password=postgres dbname=postgres sslmode=disable"
-
+	dsn := "host=postgres port=5432 user=postgres password=postgres dbname=postgres sslmode=disable"
 	db, err = sql.Open("postgres", dsn)
-
 	if err != nil {
 		return err
 	}
-	return db.Ping()
+
+	if err := db.Ping(); err != nil {
+		return err
+	}
+
+	sqlBytes, err := os.ReadFile("model.sql")
+	if err != nil {
+		return fmt.Errorf("failed to read model.sql: %w", err)
+	}
+
+	_, err = db.Exec(string(sqlBytes))
+	if err != nil {
+		return fmt.Errorf("failed to execute model.sql: %w", err)
+	}
+
+	fmt.Println("Database initialized successfully!")
+	return nil
 }
 
 func CloseDB() {

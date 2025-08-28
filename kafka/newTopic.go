@@ -10,7 +10,7 @@ import (
 )
 
 func CreateTopic(topic string, numPartitions int, replicationFactor int) {
-	conn, err := kafka.Dial("tcp", "localhost:9092")
+	conn, err := kafka.Dial("tcp", "kafka:9092")
 	if err != nil {
 		log.Fatal("failed to dial kafka:", err)
 	}
@@ -33,7 +33,7 @@ func CreateTopic(topic string, numPartitions int, replicationFactor int) {
 }
 
 func ClearTopic(topic string, partition int) {
-	conn, err := kafka.DialLeader(context.Background(), "tcp", "localhost:9092", topic, partition)
+	conn, err := kafka.DialLeader(context.Background(), "tcp", "kafka:9092", topic, partition)
 	if err != nil {
 		log.Fatal("failed to dial leader:", err)
 	}

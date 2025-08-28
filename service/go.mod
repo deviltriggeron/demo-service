@@ -1,6 +1,6 @@
 module service
 
-go 1.24.2
+go 1.22
 
 require (
 	postgres/postgres v0.0.0

@@ -12,7 +12,7 @@ import (
 
 func ProduceOrder(topic string, method string, order model.Order) error {
 	w := &kafka.Writer{
-		Addr:     kafka.TCP("localhost:9092"),
+		Addr:     kafka.TCP("kafka:9092"),
 		Topic:    topic,
 		Balancer: &kafka.LeastBytes{},
 	}
