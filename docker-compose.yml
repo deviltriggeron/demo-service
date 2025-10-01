@@ -28,10 +28,11 @@ services:
 
   orders-service:
     build: .
+    env_file: config.env
     depends_on:
       - kafka
       - postgres
     ports:
-      - "8081:8081"
+      - "8080:8080"
     command: 
       sh -c "sleep 10 && ./orders-service"
