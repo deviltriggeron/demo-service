@@ -3,10 +3,10 @@ package cache
 import (
 	"time"
 
+	"github.com/patrickmn/go-cache"
+
 	e "demo-service/internal/entity"
 	p "demo-service/internal/interface"
-
-	"github.com/patrickmn/go-cache"
 )
 
 type orderCache struct {
