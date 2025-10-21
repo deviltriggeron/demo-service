@@ -1,11 +1,12 @@
 package config
 
 import (
-	e "demo-service/internal/model"
 	"log"
 	"os"
 
 	"github.com/joho/godotenv"
+
+	e "demo-service/internal/entity"
 )
 
 func LoadConfig() *e.Config {
