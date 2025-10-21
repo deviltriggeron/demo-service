@@ -8,6 +8,7 @@
 - **Frontend:** HTML
 - **База данных:** PostgreSQL  
 - **Брокер сообщений** Kafka
+- **Кэш** go-cache
 - **Фреймворк для роутинга:** Gorilla Mux  
 - **Контейнеризация:** Docker + Docker Compose  
 - **Миграции:** SQL скрипты (`db/model.sql`)  

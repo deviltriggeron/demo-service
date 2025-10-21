@@ -8,6 +8,7 @@ import (
 	"os/signal"
 	"sync"
 	"syscall"
+	"time"
 
 	"demo-service/internal/config"
 	"demo-service/internal/handler"
@@ -22,22 +23,24 @@ func main() {
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGTERM, syscall.SIGINT)
 	defer stop()
 
-	cfg := config.LoadConfig()
+	cfg := config.LoadConfigDB()
 
 	storage, err := postgres.InitDB(cfg)
 	if err != nil {
 		log.Fatalf("Error init database: %v", err)
 	}
 
-	orderCache, err := cache.NewCache(32)
+	orderCache := cache.NewCache(10*time.Minute, 15*time.Minute)
+
 	if err != nil {
 		log.Fatalf("Error init cache: %v", err)
 	}
 	var wg sync.WaitGroup
 
-	brokers := []string{"kafka:9092"}
-	groupID := "order-consumer"
-	broker := kafka.NewKafkaBroker(brokers, groupID)
+	cfgBroker := config.LoadConfigKafka()
+	var brokerCfg []string
+	brokerCfg = append(brokerCfg, cfgBroker.Broker)
+	broker := kafka.NewKafkaBroker(brokerCfg, cfgBroker.GroupID)
 	broker.CreateTopic("orders", 1, 1)
 
 	svc := service.NewOrderService(orderCache, storage)
@@ -45,7 +48,7 @@ func main() {
 	router := router.NewRouter(handler)
 
 	srv := http.Server{
-		Addr:    ":8080",
+		Addr:    config.LoadConfigAddr(),
 		Handler: router,
 	}
 

@@ -28,10 +28,9 @@ func RunMigration(db *sql.DB, dir string) error {
 		return fmt.Errorf("failed to start transaction: %w", err)
 	}
 
-	if _, err := db.Exec(string(sqlBytes)); err != nil {
-		rollBackErr := tx.Rollback()
-		if rollBackErr != nil {
-			return fmt.Errorf("failed to rollback: %w", rollBackErr)
+	if _, err := tx.Exec(string(sqlBytes)); err != nil {
+		if rbErr := tx.Rollback(); rbErr != nil {
+			return fmt.Errorf("failed to rollback: %w", rbErr)
 		}
 		return fmt.Errorf("failed to execute migration: %w", err)
 	}

@@ -2,22 +2,25 @@ package service
 
 import (
 	"context"
-	"errors"
 	"fmt"
+
+	"github.com/go-playground/validator"
 
 	e "demo-service/internal/entity"
 	ports "demo-service/internal/interface"
 )
 
 type orderService struct {
-	cache ports.OrderCache
-	db    ports.OrderRepository
+	cache    ports.OrderCache
+	db       ports.OrderRepository
+	validate *validator.Validate
 }
 
 func NewOrderService(c ports.OrderCache, storage ports.OrderRepository) OrderService {
 	return &orderService{
-		cache: c,
-		db:    storage,
+		cache:    c,
+		db:       storage,
+		validate: validator.New(),
 	}
 }
 
@@ -107,21 +110,14 @@ func (s *orderService) HandleKafkaMessage(order e.Order, method string) error {
 }
 
 func validateOrder(o e.Order) error {
-	if o.OrderUID == "" {
-		return fmt.Errorf("order_uid is required")
-	}
-	if o.TrackNumber == "" {
-		return errors.New("track_number is required")
-	}
-	if o.DeliveryService == "" {
-		return fmt.Errorf("delivery_service is required")
-	}
-	if o.Delivery.Address == "" {
-		return fmt.Errorf("delivery.address is required")
-	}
-	for _, item := range o.Items {
-		if item.Price <= 0 {
-			return fmt.Errorf("item price must be positive")
+	var validate = validator.New()
+	if err := validate.Struct(o); err != nil {
+		if _, ok := err.(*validator.InvalidValidationError); ok {
+			return err
+		}
+
+		for _, e := range err.(validator.ValidationErrors) {
+			return fmt.Errorf("field '%s' failed on '%s' validation", e.Field(), e.Tag())
 		}
 	}
 	return nil

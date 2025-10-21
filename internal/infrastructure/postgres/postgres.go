@@ -16,7 +16,7 @@ type postgres struct {
 	db *sql.DB
 }
 
-func InitDB(cfg *e.Config) (p.OrderRepository, error) {
+func InitDB(cfg *e.ConfigDB) (p.OrderRepository, error) {
 	var err error
 
 	dsn := fmt.Sprintf(

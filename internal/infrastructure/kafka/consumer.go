@@ -14,7 +14,7 @@ import (
 
 func (k *kafkaBroker) ConsumeOrder(ctx context.Context, topic string, handler func(order e.Order, method string) error) error {
 	r := kafka.NewReader(kafka.ReaderConfig{
-		Brokers: []string{"kafka:9092"},
+		Brokers: k.brokers,
 		Topic:   topic,
 		GroupID: "order-consumer",
 	})

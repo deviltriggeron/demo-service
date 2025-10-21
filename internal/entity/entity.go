@@ -1,41 +1,41 @@
 package entity
 
 type Order struct {
-	OrderUID        string `json:"order_uid"`
-	TrackNumber     string `json:"track_number"`
-	Entry           string `json:"entry"`
-	Locale          string `json:"locale"`
+	OrderUID        string `json:"order_uid" validate:"required"`
+	TrackNumber     string `json:"track_number" validate:"required"`
+	Entry           string `json:"entry" validate:"required"`
+	Locale          string `json:"locale" validate:"required"`
 	InternalSig     string `json:"internal_signature"`
-	CustomerID      string `json:"customer_id"`
-	DeliveryService string `json:"delivery_service"`
+	CustomerID      string `json:"customer_id" validate:"required"`
+	DeliveryService string `json:"delivery_service" validate:"required"`
 	Shardkey        string `json:"shardkey"`
 	SmID            int    `json:"sm_id"`
-	DateCreated     string `json:"date_created"`
+	DateCreated     string `json:"date_created" validate:"required"`
 	OofShard        string `json:"oof_shard"`
 
-	Delivery Delivery `json:"delivery"`
-	Payment  Payment  `json:"payment"`
-	Items    []Item   `json:"items"`
+	Delivery Delivery `json:"delivery" validate:"required,dive"`
+	Payment  Payment  `json:"payment" validate:"required,dive"`
+	Items    []Item   `json:"items" validate:"required,dive"`
 }
 
 type Delivery struct {
 	OrderUID string `json:"order_uid"`
-	Name     string `json:"name"`
-	Phone    string `json:"phone"`
+	Name     string `json:"name" validate:"required"`
+	Phone    string `json:"phone" validate:"required"`
 	Zip      string `json:"zip"`
-	City     string `json:"city"`
-	Address  string `json:"address"`
+	City     string `json:"city" validate:"required"`
+	Address  string `json:"address" validate:"required"`
 	Region   string `json:"region"`
-	Email    string `json:"email"`
+	Email    string `json:"email" validate:"required,email"`
 }
 
 type Payment struct {
 	OrderUID     string `json:"order_uid"`
 	Transaction  string `json:"transaction"`
 	RequestID    string `json:"request_id"`
-	Currency     string `json:"currency"`
-	Provider     string `json:"provider"`
-	Amount       int    `json:"amount"`
+	Currency     string `json:"currency" validate:"required,len=3"`
+	Provider     string `json:"provider" validate:"required"`
+	Amount       int    `json:"amount" validate:"gt=0"`
 	PaymentDT    int64  `json:"payment_dt"`
 	Bank         string `json:"bank"`
 	DeliveryCost int    `json:"delivery_cost"`
@@ -46,10 +46,10 @@ type Payment struct {
 type Item struct {
 	OrderUID    string `json:"order_uid"`
 	ChrtID      int64  `json:"chrt_id"`
-	TrackNumber string `json:"track_number"`
-	Price       int    `json:"price"`
+	TrackNumber string `json:"track_number" validate:"required"`
+	Price       int    `json:"price" validate:"gt=0"`
 	Rid         string `json:"rid"`
-	Name        string `json:"name"`
+	Name        string `json:"name" validate:"required"`
 	Sale        int    `json:"sale"`
 	Size        string `json:"size"`
 	TotalPrice  int    `json:"total_price"`
@@ -63,11 +63,16 @@ type KafkaMsg struct {
 	Method string `json:"method"`
 }
 
-type Config struct {
+type ConfigDB struct {
 	PostgresUser     string
 	PostgresPassword string
 	PostgresDB       string
 	PostgresHost     string
 	PostgresPort     string
 	ServerPort       string
+}
+
+type ConfigBroker struct {
+	Broker  string
+	GroupID string
 }
